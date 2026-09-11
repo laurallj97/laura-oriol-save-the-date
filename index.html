@@ -72,7 +72,7 @@
 
   /* ============ COVER / ENVELOPE ============ */
   #cover{
-    position:fixed; inset:0; z-index:30;
+    position:absolute; top:0; left:0; width:100%; height:100vh; height:100dvh; z-index:30;
     background:
       radial-gradient(circle at 28% 14%, rgba(160,168,133,0.42), transparent 52%),
       radial-gradient(circle at 80% 86%, rgba(167,155,176,0.20), transparent 50%),
@@ -172,19 +172,27 @@
   .card .microlabel{ color:var(--olive); opacity:0; transition:opacity .6s ease .95s, transform .6s ease .95s; transform:translateY(6px);}
   .card .card-names{ font-size:2.2rem; color:var(--ink); margin:8px 0 4px; opacity:0; transition:opacity .6s ease 1.08s, transform .6s ease 1.08s; transform:translateY(6px);}
   .card .card-date{ font-family:'Cormorant SC',serif; letter-spacing:.14em; font-size:.95rem; color:var(--ink-soft); opacity:0; transition:opacity .6s ease 1.2s, transform .6s ease 1.2s; transform:translateY(6px);}
-  .card .know-more{
-    display:block; margin:18px auto 0; background:none; border:none; cursor:pointer;
-    font-family:'Cormorant SC',serif; letter-spacing:.14em; font-size:.8rem; color:var(--olive);
-    padding:6px 4px; opacity:0; transition:opacity .6s ease 1.5s, transform .6s ease 1.5s; transform:translateY(6px);
-  }
-  #cover.opening .card .microlabel, #cover.opening .card .card-names, #cover.opening .card .card-date, #cover.opening .card .know-more{ opacity:1; transform:none; }
+  #cover.opening .card .microlabel, #cover.opening .card .card-names, #cover.opening .card .card-date{ opacity:1; transform:none; }
 
   .tap-hint{
-    margin-top:30px; color:rgba(248,243,234,0.62);
+    margin-top:30px; position:relative; height:22px;
+    color:rgba(248,243,234,0.62);
     font-family:'Cormorant SC',serif; letter-spacing:.24em; font-size:.72rem;
+  }
+  .tap-hint .tap-label, .tap-hint .know-more{
+    position:absolute; left:50%; top:0; transform:translateX(-50%);
+    white-space:nowrap; line-height:22px; margin:0;
     transition:opacity .4s ease;
   }
-  #cover.opening .tap-hint{ opacity:0; }
+  .tap-hint .tap-label{ opacity:1; }
+  .tap-hint .know-more{
+    opacity:0; pointer-events:none;
+    background:none; border:none; cursor:pointer;
+    color:inherit; font:inherit; letter-spacing:inherit;
+    padding:0;
+  }
+  #cover.opening .tap-hint .tap-label{ opacity:0; }
+  #cover.opening .tap-hint .know-more{ opacity:1; pointer-events:auto; transition:opacity .5s ease 1.4s; }
 
   /* ============ BOOK / SECTIONS ============ */
   #book{ position:relative; z-index:1; }
@@ -344,7 +352,6 @@
           <div class="microlabel">Save the Date</div>
           <div class="card-names script">Laura &amp; Oriol</div>
           <div class="card-date">04 · 06 · 2027</div>
-          <button class="know-more" id="knowMoreBtn" type="button" data-i18n="know_more_btn">Tap to know more →</button>
         </div>
 
         <div class="envelope-flap paper-grain"></div>
@@ -358,7 +365,10 @@
         </div>
       </div>
     </div>
-    <div class="tap-hint" data-i18n="tap_hint">TAP THE SEAL</div>
+    <div class="tap-hint">
+      <span class="tap-label" data-i18n="tap_hint">TAP THE SEAL</span>
+      <button class="know-more" id="knowMoreBtn" type="button" data-i18n="know_more_btn">Tap to know more →</button>
+    </div>
   </div>
 </div>
 
@@ -558,6 +568,8 @@
   var cover = document.getElementById('cover');
   var seal = document.getElementById('sealTap');
   var knowMoreBtn = document.getElementById('knowMoreBtn');
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
   function openEnvelope(){
     if(cover.classList.contains('opening')) return;
     cover.classList.add('opening');
@@ -567,6 +579,9 @@
   knowMoreBtn.addEventListener('click', function(e){
     e.stopPropagation();
     cover.classList.add('done');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0,0);
   });
 
   /* ---------- reveal on scroll ---------- */
