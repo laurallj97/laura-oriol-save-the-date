@@ -55,20 +55,27 @@
   /* ============ LANGUAGE SWITCH ============ */
   .langbar{
     position:fixed; top:0; left:0; right:0; z-index:40;
-    display:flex; justify-content:center; gap:14px;
-    padding:14px 0 10px;
+    display:flex; justify-content:center;
+    padding-top:max(16px, calc(env(safe-area-inset-top) + 12px));
+    padding-bottom:10px;
     pointer-events:none;
   }
-  .langbar button{
+  .langbar-inner{
     pointer-events:auto;
+    display:flex; gap:4px;
+    background:rgba(54,58,42,0.55);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    border-radius:20px;
+    padding:5px 6px;
+    box-shadow:0 8px 18px -10px rgba(0,0,0,.4);
+  }
+  .langbar button{
     background:none; border:none; cursor:pointer;
     font-family:'Cormorant SC',serif; letter-spacing:.18em;
-    font-size:.78rem; color:rgba(59,54,46,0.45);
-    padding:2px 4px; transition:color .25s;
+    font-size:.78rem; color:rgba(248,243,234,0.62);
+    padding:4px 11px; border-radius:14px; transition:color .25s, background .25s;
   }
-  .langbar button.active{color:var(--ink);}
-  #cover .langbar button{color:rgba(248,243,234,0.55);}
-  #cover .langbar button.active{color:var(--ivory);}
+  .langbar button.active{ color:var(--ivory); background:rgba(248,243,234,0.2); }
 
   /* ============ COVER / ENVELOPE ============ */
   #cover{
@@ -206,7 +213,7 @@
   .sec-h2{ text-align:center; font-weight:400; font-style:italic; font-size:1.68rem; margin:2px 0 0; }
 
   /* ---- announce ---- */
-  #announce{ text-align:center; padding-top:60px; padding-bottom:16px; }
+  #announce{ text-align:center; padding-top:max(60px, calc(env(safe-area-inset-top) + 52px)); padding-bottom:16px; }
   #announce .microlabel{ font-size:1.18rem; letter-spacing:.32em; margin-bottom:6px; }
   #announce .rule-mini{ width:30px; margin:12px auto 0; opacity:.85; }
   #announce h1{ font-size:2.7rem; margin:12px 0 20px; color:var(--ink); }
@@ -336,9 +343,11 @@
 <body>
 
 <div class="langbar">
-  <button data-setlang="ca">CA</button>
-  <button data-setlang="es">ES</button>
-  <button data-setlang="en">EN</button>
+  <div class="langbar-inner">
+    <button data-setlang="ca">CA</button>
+    <button data-setlang="es">ES</button>
+    <button data-setlang="en">EN</button>
+  </div>
 </div>
 
 <!-- ===================== COVER ===================== -->
@@ -472,7 +481,7 @@
       tap_hint:"TOCA EL SEGELL",
       know_more_btn:"Saber-ne més →",
       announce_label:"Ens casem",
-      announce_date:"4 de juny de 2027 · Ca n'Alzina, Igualada",
+      announce_date:"4 de juny de 2027 · 17:00 h · Ca n'Alzina, Igualada",
       note_text1:"De Barcelona a Darmstadt, vam fer el salt junts i hi vam trobar una segona casa. Des d’aleshores, hem viatjat del Japó a Islàndia, hem recorregut Europa i hem arribat fins a Costa Rica, compartint un munt d’aventures i descobrint nous llocs junts.",
       note_text2:"Ara ha arribat el moment de reunir els dos llocs que sentim com a casa (🇪🇸 🇩🇪) i començar la nostra aventura més gran fins ara, envoltats de les persones que més estimem. No ens podríem imaginar començar aquest nou capítol sense vosaltres.",
       story_label:"La nostra història",
@@ -494,7 +503,7 @@
       tap_hint:"TOCA EL SELLO",
       know_more_btn:"Ver más →",
       announce_label:"Nos casamos",
-      announce_date:"4 de junio de 2027 · Ca n'Alzina, Igualada",
+      announce_date:"4 de junio de 2027 · 17:00 h · Ca n'Alzina, Igualada",
       note_text1:"De Barcelona a Darmstadt, dimos el salto juntos y encontramos un segundo hogar. Desde entonces, hemos viajado de Japón a Islandia, recorrido Europa y llegado hasta Costa Rica, compartiendo un sinfín de aventuras y descubriendo nuevos lugares juntos.",
       note_text2:"Ahora ha llegado el momento de reunir los dos lugares que sentimos como casa (🇪🇸 🇩🇪) y comenzar nuestra mayor aventura hasta ahora, rodeados de las personas que más queremos. No podríamos imaginar empezar este nuevo capítulo sin vosotros.",
       story_label:"Nuestra historia",
@@ -516,7 +525,7 @@
       tap_hint:"TAP THE SEAL",
       know_more_btn:"Tap to know more →",
       announce_label:"We're getting married",
-      announce_date:"4th June 2027 · Ca n'Alzina, Igualada",
+      announce_date:"4th June 2027 · 5:00 PM · Ca n'Alzina, Igualada",
       note_text1:"From Barcelona to Darmstadt, we took a leap together and found a second place to call home. Since then, we’ve travelled from Japan to Iceland, through Europe and all the way to Costa Rica, sharing so many adventures and discovering new places together.",
       note_text2:"Now it’s time to bring together the two places we call home (🇪🇸 🇩🇪) and begin our greatest adventure yet, surrounded by the people we love most. We couldn’t imagine starting this next chapter without you.",
       story_label:"Our story",
@@ -591,7 +600,7 @@
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 
   /* ---------- countdown (calendar-aware) ---------- */
-  var target = new Date(Date.UTC(2027,5,4,10,0,0)); // 4 June 2027, 10:00 UTC
+  var target = new Date(Date.UTC(2027,5,4,15,0,0)); // 4 June 2027, 17:00 CEST (15:00 UTC)
   function diffParts(now, then){
     var months=0;
     var cursor = new Date(now.getTime());
@@ -625,11 +634,11 @@
 
   /* ---------- calendar links ---------- */
   var gcalUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent("Laura & Oriol — Save the Date") +
-    "&dates=20270604T090000Z/20270604T220000Z&details=" + encodeURIComponent("Ca n'Alzina, Igualada, Barcelona") +
+    "&dates=20270604T150000Z/20270604T230000Z&details=" + encodeURIComponent("Ca n'Alzina, Igualada, Barcelona · 17:00") +
     "&location=" + encodeURIComponent("Ca n'Alzina, Igualada");
   var owUrl = "https://outlook.live.com/calendar/0/deeplink/compose?subject=" + encodeURIComponent("Laura & Oriol — Save the Date") +
-    "&startdt=2027-06-04T09:00:00Z&enddt=2027-06-04T22:00:00Z&location=" + encodeURIComponent("Ca n'Alzina, Igualada") +
-    "&body=" + encodeURIComponent("Ca n'Alzina, Igualada, Barcelona");
+    "&startdt=2027-06-04T15:00:00Z&enddt=2027-06-04T23:00:00Z&location=" + encodeURIComponent("Ca n'Alzina, Igualada") +
+    "&body=" + encodeURIComponent("Ca n'Alzina, Igualada, Barcelona · 17:00");
   var gcalBtn = document.getElementById('gcal-btn');
   var owBtn = document.getElementById('outlook-btn');
   if(gcalBtn) gcalBtn.href = gcalUrl;
